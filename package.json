@@ -4,8 +4,8 @@
   "main": "index.js",
 "scripts": {
   "build": "tsc",
-  "start": "node dist/app.js",
-  "dev": "ts-node-dev --respawn --transpile-only src/app.js"
+  "start": "node dist/app.ts",
+  "dev": "ts-node-dev --respawn --transpile-only src/app.ts"
 },
   "keywords": [],
   "author": "",
