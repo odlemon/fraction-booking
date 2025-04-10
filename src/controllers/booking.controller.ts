@@ -1,16 +1,18 @@
 import type { Request, Response, NextFunction } from "express";
-import { BookingService } from "../services/booking.service";
-import type { CreateBookingDto, UpdateTimesheetDto } from "../types/dtos";
+import type { IBookingService } from "../services/booking.service";
 import { ApiError } from "../types/error.types";
 import { TimesheetAction } from "../types/booking.types";
 
 export class BookingController {
-  private bookingService = new BookingService();
+  constructor(private bookingService: IBookingService) {}
 
   public getAllBookings = (req: Request, res: Response, next: NextFunction): void => {
     try {
-      const bookings = this.bookingService.getAllBookings();
-      res.status(200).json(bookings);
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      
+      const result = this.bookingService.getAllBookings(page, limit);
+      res.status(200).json(result);
     } catch (error) {
       next(error);
     }
@@ -18,7 +20,7 @@ export class BookingController {
 
   public createBooking = (req: Request, res: Response, next: NextFunction): void => {
     try {
-      const bookingData: CreateBookingDto = req.body;
+      const bookingData = req.body;
       const newBooking = this.bookingService.createBooking(bookingData);
       res.status(201).json(newBooking);
     } catch (error) {

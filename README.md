@@ -105,9 +105,6 @@ Retrieves a list of all bookings.
 
 
 
-
-
-
 ### Create a Booking
 
 Creates a new booking.
@@ -392,6 +389,8 @@ booking-api/
 │   │   └── error.middleware.ts
 │   ├── models/                 # Data models
 │   │   └── booking.model.ts
+│   ├── repositories/           # Data access layer
+│   │   └── booking.repository.ts
 │   ├── routes/                 # API routes
 │   │   └── booking.routes.ts
 │   ├── services/               # Business logic

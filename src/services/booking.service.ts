@@ -2,49 +2,74 @@ import type { Booking } from "../models/booking.model";
 import type { CreateBookingDto } from "../types/dtos";
 import { TimesheetAction, TimesheetStatus } from "../types/booking.types";
 import { ApiError } from "../types/error.types";
+import { IBookingRepository } from "../repositories/booking.repository";
 
-export class BookingService {
-  private bookings: Booking[] = [];
-  private nextId = 1;
+export interface IBookingService {
+  getAllBookings(page?: number, limit?: number): { data: Booking[], meta: { total: number, page: number, limit: number, pages: number } };
+  findBookingById(id: string): Booking | undefined;
+  createBooking(bookingData: CreateBookingDto): Booking;
+  updateTimesheetStatus(id: string, action: TimesheetAction): Booking;
+}
 
-  public getAllBookings(): Booking[] {
-    return this.bookings;
+export class BookingService implements IBookingService {
+  constructor(private bookingRepository: IBookingRepository) {}
+
+  public getAllBookings(page = 1, limit = 10): { data: Booking[], meta: { total: number, page: number, limit: number, pages: number } } {
+    const allBookings = this.bookingRepository.findAll();
+    const total = allBookings.length;
+    const pages = Math.ceil(total / limit);
+    const skip = (page - 1) * limit;
+    const data = allBookings.slice(skip, skip + limit);
+    
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        pages
+      }
+    };
   }
 
   public findBookingById(id: string): Booking | undefined {
-    return this.bookings.find((booking) => booking.id === id);
+    return this.bookingRepository.findById(id);
   }
 
   public createBooking(bookingData: CreateBookingDto): Booking {
     this.validateBookingData(bookingData);
     
     const newBooking: Booking = {
-      id: (this.nextId++).toString(),
+      id: "", // Will be set by repository
       ...bookingData,
       timesheetStatus: TimesheetStatus.Pending
     };
 
-    this.bookings.push(newBooking);
-    return newBooking;
+    return this.bookingRepository.create(newBooking);
   }
 
   public updateTimesheetStatus(id: string, action: TimesheetAction): Booking {
-    const bookingIndex = this.bookings.findIndex((booking) => booking.id === id);
+    const booking = this.bookingRepository.findById(id);
 
-    if (bookingIndex === -1) {
+    if (!booking) {
       throw new ApiError(404, `Booking with ID ${id} not found`);
     }
 
-    const booking = this.bookings[bookingIndex];
+    const updatedBooking = { ...booking };
 
     if (action === TimesheetAction.Approve) {
-      booking.timesheetStatus = TimesheetStatus.Approved;
+      updatedBooking.timesheetStatus = TimesheetStatus.Approved;
     } else if (action === TimesheetAction.Reject) {
-      booking.timesheetStatus = TimesheetStatus.Rejected;
+      updatedBooking.timesheetStatus = TimesheetStatus.Rejected;
     }
 
-    this.bookings[bookingIndex] = booking;
-    return booking;
+    const result = this.bookingRepository.update(id, updatedBooking);
+    
+    if (!result) {
+      throw new ApiError(500, "Failed to update booking");
+    }
+    
+    return result;
   }
 
   private validateBookingData(data: CreateBookingDto): void {
