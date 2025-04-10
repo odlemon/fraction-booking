@@ -30,12 +30,9 @@ A lightweight REST API that supports booking management and timesheet approval f
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/booking-api.git
-cd booking-api
-
+git clone https://github.com/odlemon/fraction-booking.git
 
 2. Install dependencies:
-
 
 ```npm install
 
@@ -60,7 +57,7 @@ npm run build
 npm start
 ```
 
-The server will start on port 3000 by default. You can change this by setting the `PORT` environment variable.
+The server will start on port 3000 by default.
 
 ## API Endpoints
 
@@ -75,70 +72,6 @@ Retrieves a list of all bookings.
 - **Code**: 200
 - **Content**:
 
-Here's the entire README.md in one code block for easy copying:
-
-```markdown
-# Booking API
-
-A lightweight REST API that supports booking management and timesheet approval flow. This API allows you to create bookings, view all bookings, and update timesheet statuses.
-
-## Table of Contents
-
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Running the Server](#running-the-server)
-- [API Endpoints](#api-endpoints)
-- [Testing Scenarios](#testing-scenarios)
-- [Project Structure](#project-structure)
-
-## Features
-
-- Create new bookings with job role, location, date, and time information
-- Retrieve a list of all bookings
-- Update timesheet status (approve/reject)
-- Input validation and error handling
-- In-memory data storage
-
-## Prerequisites
-
-- Node.js (v14 or higher)
-- npm (v6 or higher)
-
-## Installation
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/yourusername/booking-api.git
-cd booking-api
-```
-
-2. Install dependencies:
-
-
-```shellscript
-npm install
-```
-
-## Running the Server
-
-### Development Mode
-
-Run the server in development mode with hot reloading:
-
-```shellscript
-npm run dev
-```
-
-### Production Mode
-
-Build and run the server in production mode:
-
-```shellscript
-npm run build
-npm start
-```
 
 The server will start on port 3000 by default. You can change this by setting the `PORT` environment variable.
 
